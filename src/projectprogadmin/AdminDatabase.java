@@ -4,8 +4,10 @@
  * and open the template in the editor.
  */
 
+import BDD.Audio;
 import BDD.DataBase;
 import BDD.Media;
+import BDD.Video;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -53,21 +55,33 @@ public final class AdminDatabase {
             }
         }
     }
-    
+
     /**
-     * Extracts an ArrayList of Media from the file containing all metadatas about those medias.
-     * 
+     * Extracts an ArrayList of Media from the file containing all metadatas
+     * about those medias.
+     *
      * @param path File's path containing metadatas.
      * @return ArrayList\<Media\>
      */
-    private ArrayList<Media> extractList(String path){
+    private ArrayList<Media> extractList(String path, String mediaType) {
+        ArrayList<Media> result;
+        if ("Video".equals(mediaType) || "Audio".equals(mediaType)) {
+            result = new ArrayList<>();
+        } else {
+            System.out.print("Wrong argument : " + mediaType + "\nUse Audio or Video instead.");
+            return null;
+        }
         
+        //TODO
+        //Reading of the file
+        
+        return result;
     }
-    
+
     /**
      * Adds medias from a text file to the database.
      */
-    private static void adminAddMedias(){
+    private static void adminAddMedias() {
         Scanner sc = new Scanner(System.in);
         int choice = 4;
         while (choice > 0 && choice < 5) {
@@ -95,18 +109,18 @@ public final class AdminDatabase {
             }
         }
     }
-    
+
     /**
      * Removes medias from the database.
      */
-    private static void adminRmMedias(){
+    private static void adminRmMedias() {
         //TODO
     }
-    
+
     /**
      * Shows the entire database.
      */
-    private static void adminShowMedias(){
+    private static void adminShowMedias() {
         //TODO
     }
 
