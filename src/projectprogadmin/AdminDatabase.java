@@ -1,3 +1,5 @@
+package projectprogadmin;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -80,35 +82,47 @@ public final class AdminDatabase {
     /**
      * Adds medias from a text file to the database.
      */
-    private static void adminAddMedias(String path, String mediaType) {
-        
+    protected static void adminAddMedias(String path, String mediaType) {
+        switch(mediaType){
+            case "Video":
+                
+                break;
+            case "Audio":
+                
+                break;
+            case "Question":
+                
+                break;
+            default:
+                System.out.println("Wrong media type : " + mediaType);
+        }
     }
 
     /**
      * Removes medias from the database.
      */
-    private static void adminRmMedias(String path, String mediaType) {
+    protected static void adminRmMedias(String path, String mediaType) {
         //TODO
     }
 
     /**
      * Shows the entire Video database.
      */
-    private static void adminShowVideos() {
+    protected static void adminShowVideos() {
         System.out.println(db.getAllVideos());
     }
 
     /**
      * Shows the entire Audio database.
      */
-    private static void adminShowAudios() {
+    protected static void adminShowAudios() {
         System.out.println(db.getAllAudios());
     }
 
     /**
      * Shows the entire Question database.
      */
-    private static void adminShowQuestions() {
+    protected static void adminShowQuestions() {
         System.out.println(db.getAllQuestions());
     }
 
