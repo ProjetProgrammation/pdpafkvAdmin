@@ -7,6 +7,7 @@
 import BDD.Audio;
 import BDD.DataBase;
 import BDD.Media;
+import BDD.Question;
 import BDD.Video;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -24,53 +25,51 @@ public final class AdminDatabase {
 
     private static DataBase db;
 
-    /**
-     * Launches the main administration interface.
-     */
-    public static void administrate() {
-        Scanner sc = new Scanner(System.in);
-        int choice = 4;
-        while (choice > 0 && choice < 5) {
-            System.out.println("What do you want to do? (Enter 1, 2, 3 or 4) :\n"
-                    + "\t1-Add medias\n"
-                    + "\t2-Remove medias\n"
-                    + "\t3-See what is in the database\n"
-                    + "\t4-Exit");
-            choice = sc.nextInt();
-            switch (choice) {
-                case 1:
-                    adminAddMedias();
-                    break;
-                case 2:
-                    adminRmMedias();
-                    break;
-                case 3:
-                    adminShowMedias();
-                    break;
-                case 4:
-                    System.out.println("Leaving administrator interface...");
-                    break;
-                default:
-                    System.out.println("Please, enter 1, 2, 3 or 4.");
-            }
-        }
-    }
 
     /**
-     * Extracts an ArrayList of Media from the file containing all metadatas
+     * Extracts an ArrayList of Video from the file containing all metadatas
      * about those medias.
      *
      * @param path File's path containing metadatas.
-     * @return ArrayList\<Media\>
+     * @return ArrayList\<Video\>
      */
-    private ArrayList<Media> extractList(String path, String mediaType) {
-        ArrayList<Media> result;
-        if ("Video".equals(mediaType) || "Audio".equals(mediaType)) {
-            result = new ArrayList<>();
-        } else {
-            System.out.print("Wrong argument : " + mediaType + "\nUse Audio or Video instead.");
-            return null;
-        }
+    private static ArrayList<Video> extractListVideo(String path) {
+        ArrayList<Video> result;
+        result = new ArrayList<>();
+        
+        //TODO
+        //Reading of the file
+        
+        return result;
+    }
+    
+    /**
+     * Extracts an ArrayList of Audio from the file containing all metadatas
+     * about those medias.
+     *
+     * @param path File's path containing metadatas.
+     * @return ArrayList\<Audio\>
+     */
+    private static ArrayList<Audio> extractListAudio(String path) {
+        ArrayList<Audio> result;
+        result = new ArrayList<>();
+        
+        //TODO
+        //Reading of the file
+        
+        return result;
+    }
+    
+    /**
+     * Extracts an ArrayList of Question from the file containing all metadatas
+     * about those medias.
+     *
+     * @param path File's path containing metadatas.
+     * @return ArrayList\<Question\>
+     */
+    private static ArrayList<Question> extractListQuestion(String path) {
+        ArrayList<Question> result;
+        result = new ArrayList<>();
         
         //TODO
         //Reading of the file
@@ -81,47 +80,36 @@ public final class AdminDatabase {
     /**
      * Adds medias from a text file to the database.
      */
-    private static void adminAddMedias() {
-        Scanner sc = new Scanner(System.in);
-        int choice = 4;
-        while (choice > 0 && choice < 5) {
-            System.out.println("What type of media do you want to add? (Enter 1, 2, 3 or 4) :\n"
-                    + "\t1-Videos\n"
-                    + "\t2-Audios\n"
-                    + "\t3-Question\n"
-                    + "\t4-Exit");
-            choice = sc.nextInt();
-            switch (choice) {
-                case 1:
-                    System.out.println("Enter the file containing the videos to add :");
-                    break;
-                case 2:
-                    adminRmMedias();
-                    break;
-                case 3:
-                    adminShowMedias();
-                    break;
-                case 4:
-                    System.out.println("Leaving administrator interface...");
-                    break;
-                default:
-                    System.out.println("Please, enter 1, 2, 3 or 4.");
-            }
-        }
+    private static void adminAddMedias(String path, String mediaType) {
+        
     }
 
     /**
      * Removes medias from the database.
      */
-    private static void adminRmMedias() {
+    private static void adminRmMedias(String path, String mediaType) {
         //TODO
     }
 
     /**
-     * Shows the entire database.
+     * Shows the entire Video database.
      */
-    private static void adminShowMedias() {
-        //TODO
+    private static void adminShowVideos() {
+        System.out.println(db.getAllVideos());
+    }
+
+    /**
+     * Shows the entire Audio database.
+     */
+    private static void adminShowAudios() {
+        System.out.println(db.getAllAudios());
+    }
+
+    /**
+     * Shows the entire Question database.
+     */
+    private static void adminShowQuestions() {
+        System.out.println(db.getAllQuestions());
     }
 
 }
