@@ -5,6 +5,10 @@
  */
 package projectprogadmin;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author alexandre
@@ -21,13 +25,31 @@ public class ProjectProgAdmin {
             case "add":
                 switch(args[1]){
                     case "video":
-                        AdminDatabase.adminAddMedias(args[2], "Video");
+        {
+            try {
+                AdminDatabase.adminAddMedias(args[2], "Video");
+            } catch (IOException ex) {
+                Logger.getLogger(ProjectProgAdmin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
                         break;
                     case "audio":
-                        AdminDatabase.adminAddMedias(args[2], "Audio");
+        {
+            try {
+                AdminDatabase.adminAddMedias(args[2], "Audio");
+            } catch (IOException ex) {
+                Logger.getLogger(ProjectProgAdmin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
                         break;
                     case "question":
-                        AdminDatabase.adminAddMedias(args[2], "Question");
+        {
+            try {
+                AdminDatabase.adminAddMedias(args[2], "Question");
+            } catch (IOException ex) {
+                Logger.getLogger(ProjectProgAdmin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
                         break;
                     default :
                         System.out.println("Wrong argument : " + args[1] + "\nUse audio or video instead.");

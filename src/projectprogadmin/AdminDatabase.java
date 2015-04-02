@@ -7,18 +7,26 @@ package projectprogadmin;
  */
 import BDD.Audio;
 import BDD.DataBase;
-import BDD.Media;
 import BDD.Question;
 import BDD.Video;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>
  * Use this class to manage the database.
  * <b>Note that everything happening here is not shown in the user interface but
  * in the command line.</b>
+ * Notice that media files's name need to be formatted like :
  * </p>
+ * <ul>
+ *  <li>Video : [0-9]*_[0-9]*_[0-9]*_[a-zA-Z0-9]*_[a-zA-Z0-9]{2}_[a-zA-Z0-9]*_[a-zA-Z0-9]{9}\\.[a-zA-Z0-9]*  for example 2013_3_20_S33_fr_L1_SINC_B_ok.mp4</li>
+ *  <li>Audio : [0-9]*_[0-9]*_[0-9]*_[a-zA-Z0-9]*_[a-zA-Z0-9]{2}_[a-zA-Z0-9]*_[a-zA-Z0-9]{4}\\.[a-zA-Z0-9]*  for example 2013_3_20_S33_fr_L1_SINC.wav</li>
+ * </ul>
  *
  * @author akervadec
  */
@@ -33,12 +41,38 @@ public final class AdminDatabase {
      * @param path File's path containing metadatas.
      * @return ArrayList\<Video\>
      */
-    private static ArrayList<Video> extractListVideo(String path) {
+    private static ArrayList<Video> extractListVideo(String path) throws IOException {
         ArrayList<Video> result;
         result = new ArrayList<>();
+        BufferedReader reader = null;
+        String line;
+        //Initializing the patterns to extract datas
+        Pattern pLanguage = Pattern.compile("[^_]*_[^_]*_[^_]*_[^_]*_[^_]$[^_]$");
+        Pattern pName = Pattern.compile("[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_*\\.");
+        Pattern pFormat = Pattern.compile("\\.*");
+        Matcher m;
+        String language, name, format, filePath;
 
-        //TODO
-        //Reading of the file
+        try {
+            reader = new BufferedReader(new FileReader(path));
+            //Reading the file by line
+            System.out.println("[extractListVideo]Begining of the file reading");
+            while ((line = reader.readLine()) != null) {
+                filePath = "Resources/"+line;
+                m = pLanguage.matcher(line);
+                language = m.group().substring(m.group().length()-2);
+                m = pName.matcher(line);
+                name = m.group().substring(m.group().length()-10,m.group().length()-1);
+                m = pFormat.matcher(line);
+                format = m.group().substring(1);
+                result.add(new Video(0,name,filePath,format,getIdConvertedLanguageName(language)));
+            }
+            reader.close();
+            System.out.println("[extractListVideo]File read");
+        } catch (IOException e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
         return result;
     }
 
@@ -52,9 +86,35 @@ public final class AdminDatabase {
     private static ArrayList<Audio> extractListAudio(String path) {
         ArrayList<Audio> result;
         result = new ArrayList<>();
+        BufferedReader reader = null;
+        String line;
+        //Initializing the patterns to extract datas
+        Pattern pLanguage = Pattern.compile("[^_]*_[^_]*_[^_]*_[^_]*_[^_]$[^_]$");
+        Pattern pName = Pattern.compile("[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_*\\.");
+        Pattern pFormat = Pattern.compile("\\.*");
+        Matcher m;
+        String language, name, format, filePath;
 
-        //TODO
-        //Reading of the file
+        try {
+            reader = new BufferedReader(new FileReader(path));
+            //Reading the file by line
+            System.out.println("[extractListAudio]Begining of the file reading");
+            while ((line = reader.readLine()) != null) {
+                filePath = "Resources/"+line;
+                m = pLanguage.matcher(line);
+                language = m.group().substring(m.group().length()-2);
+                m = pName.matcher(line);
+                name = m.group().substring(m.group().length()-5,m.group().length()-1);
+                m = pFormat.matcher(line);
+                format = m.group().substring(1);
+                result.add(new Audio(0,name,filePath,format,getIdConvertedLanguageName(language)));
+            }
+            reader.close();
+            System.out.println("[extractListAudio]File read");
+        } catch (IOException e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
         return result;
     }
 
@@ -80,7 +140,7 @@ public final class AdminDatabase {
      * @param path
      * @param mediaType
      */
-    protected static void adminAddMedias(String path, String mediaType) {
+    protected static void adminAddMedias(String path, String mediaType) throws IOException {
         switch (mediaType) {
             case "Video":
                 ArrayList<Video> tmpVideoList;
@@ -146,6 +206,29 @@ public final class AdminDatabase {
      */
     protected static void adminShowQuestions() {
         System.out.println(db.getAllQuestions());
+    }
+    
+    /**
+     * Returns the id of the language searched.
+     * @param language Language's name searched.
+     * @return int
+     */
+    protected static int getIdConvertedLanguageName(String language){
+        switch(language){
+            case "fr":
+                return(db.getLanguageByName("French"));
+            case "en":
+                return(db.getLanguageByName("English"));
+            case "pt":
+                return(db.getLanguageByName("Portuguese"));
+            case "jp":
+                return(db.getLanguageByName("Japonese"));
+            case "us":
+                return(db.getLanguageByName("American"));
+            default :
+                System.out.println("[getIdConvertedLanguageName]Cannot convert :" + language);
+        }
+        return 0;
     }
 
 }
