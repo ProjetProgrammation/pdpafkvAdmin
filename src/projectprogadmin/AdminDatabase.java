@@ -149,7 +149,9 @@ public final class AdminDatabase {
                     db.addVideo(tmpVideoList.get(i).getName(),
                             tmpVideoList.get(i).getFilePath(),
                             tmpVideoList.get(i).getFormat(),
-                            db.getLanguageById(tmpVideoList.get(i).getIdLanguage()));
+                            db.getLanguageById(tmpVideoList.get(i).getIdLanguage()),
+                            tmpVideoList.get(i).getThumbnailPicPath(),
+                            tmpVideoList.get(i).getThumbnailGifPath());
                 }
                 break;
             case "Audio":
