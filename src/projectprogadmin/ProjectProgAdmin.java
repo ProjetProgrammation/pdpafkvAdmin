@@ -16,46 +16,43 @@ import java.util.logging.Logger;
 public class ProjectProgAdmin {
 
     /**
-     * 
-     * 
+     *
+     *
      * @param args The command line arguments.
      */
     public static void main(String[] args) {
-        switch(args[0]){
+        switch (args[0]) {
             case "add":
-                switch(args[1]){
-                    case "video":
-        {
-            try {
-                AdminDatabase.adminAddMedias(args[2], "Video");
-            } catch (IOException ex) {
-                Logger.getLogger(ProjectProgAdmin.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-                        break;
-                    case "audio":
-        {
-            try {
-                AdminDatabase.adminAddMedias(args[2], "Audio");
-            } catch (IOException ex) {
-                Logger.getLogger(ProjectProgAdmin.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-                        break;
-                    case "question":
-        {
-            try {
-                AdminDatabase.adminAddMedias(args[2], "Question");
-            } catch (IOException ex) {
-                Logger.getLogger(ProjectProgAdmin.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-                        break;
-                    default :
+                switch (args[1]) {
+                    case "video": {
+                        try {
+                            AdminDatabase.adminAddMedias(args[2], "Video");
+                        } catch (IOException ex) {
+                            Logger.getLogger(ProjectProgAdmin.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    break;
+                    case "audio": {
+                        try {
+                            AdminDatabase.adminAddMedias(args[2], "Audio");
+                        } catch (IOException ex) {
+                            Logger.getLogger(ProjectProgAdmin.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    break;
+                    case "question": {
+                        try {
+                            AdminDatabase.adminAddMedias(args[2], "Question");
+                        } catch (IOException ex) {
+                            Logger.getLogger(ProjectProgAdmin.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    break;
+                    default:
                         System.out.println("Wrong argument : " + args[1] + "\nUse audio or video instead.");
                 }
             case "rm":
-                switch(args[1]){
+                switch (args[1]) {
                     case "video":
                         AdminDatabase.adminRmMedias(args[2], "Video");
                         break;
@@ -64,11 +61,11 @@ public class ProjectProgAdmin {
                         break;
                     case "question":
                         AdminDatabase.adminRmMedias(args[2], "Question");
-                    default :
+                    default:
                         System.out.println("Wrong argument : " + args[1] + "\nUse audio or video instead.");
                 }
             case "ls":
-                switch(args[1]){
+                switch (args[1]) {
                     case "video":
                         AdminDatabase.adminShowVideos();
                         break;
@@ -78,10 +75,10 @@ public class ProjectProgAdmin {
                     case "question":
                         AdminDatabase.adminShowQuestions();
                         break;
-                    default :
+                    default:
                         System.out.println("Wrong argument : " + args[1] + "\nUse 'question', 'audio' or 'video' instead.");
                 }
         }
     }
-    
+
 }
