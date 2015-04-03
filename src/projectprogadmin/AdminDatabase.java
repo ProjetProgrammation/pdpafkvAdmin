@@ -24,8 +24,12 @@ import java.util.regex.Pattern;
  * Notice that media files's name need to be formatted like :
  * </p>
  * <ul>
- *  <li>Video : [0-9]*_[0-9]*_[0-9]*_[a-zA-Z0-9]*_[a-zA-Z0-9]{2}_[a-zA-Z0-9]*_[a-zA-Z0-9]{9}\\.[a-zA-Z0-9]*  for example 2013_3_20_S33_fr_L1_SINC_B_ok.mp4</li>
- *  <li>Audio : [0-9]*_[0-9]*_[0-9]*_[a-zA-Z0-9]*_[a-zA-Z0-9]{2}_[a-zA-Z0-9]*_[a-zA-Z0-9]{4}\\.[a-zA-Z0-9]*  for example 2013_3_20_S33_fr_L1_SINC.wav</li>
+ * <li>Video :
+ * [0-9]*_[0-9]*_[0-9]*_[a-zA-Z0-9]*_[a-zA-Z0-9]{2}_[a-zA-Z0-9]*_[a-zA-Z0-9]{9}\\.[a-zA-Z0-9]*
+ * for example 2013_3_20_S33_fr_L1_SINC_B_ok.mp4</li>
+ * <li>Audio :
+ * [0-9]*_[0-9]*_[0-9]*_[a-zA-Z0-9]*_[a-zA-Z0-9]{2}_[a-zA-Z0-9]*_[a-zA-Z0-9]{4}\\.[a-zA-Z0-9]*
+ * for example 2013_3_20_S33_fr_L1_SINC.wav</li>
  * </ul>
  *
  * @author akervadec
@@ -48,24 +52,30 @@ public final class AdminDatabase {
         String line;
         //Initializing the patterns to extract datas
         Pattern pLanguage = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]?[^_]?");
-        Pattern pName = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_*\\.");
+        Pattern pName = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[a-zA-Z_0-9]{9}\\.");
         Pattern pFormat = Pattern.compile("\\.[^_]*$");
         Matcher m;
-        String language, name, format, filePath;
+        String language = "", name = "", format = "", filePath;
 
         try {
             reader = new BufferedReader(new FileReader(path));
             //Reading the file by line
             System.out.println("[extractListVideo]Begining of the file reading");
             while ((line = reader.readLine()) != null) {
-                filePath = "Resources/"+line;
+                filePath = "Resources/" + line;
                 m = pLanguage.matcher(line);
-                language = m.group().substring(m.group().length()-2);
+                while (m.find()) {
+                    language = m.group().substring(m.group().length() - 2);
+                }
                 m = pName.matcher(line);
-                name = m.group().substring(m.group().length()-10,m.group().length()-1);
+                while (m.find()) {
+                    name = m.group().substring(m.group().length() - 10, m.group().length() - 1);
+                }
                 m = pFormat.matcher(line);
-                format = m.group().substring(1);
-                result.add(new Video(0,name,filePath,format,getIdConvertedLanguageName(language)));
+                while (m.find()) {
+                    format = m.group().substring(1);
+                }
+                result.add(new Video(0, name, filePath, format, getIdConvertedLanguageName(language)));
             }
             reader.close();
             System.out.println("[extractListVideo]File read");
@@ -100,14 +110,14 @@ public final class AdminDatabase {
             //Reading the file by line
             System.out.println("[extractListAudio]Begining of the file reading");
             while ((line = reader.readLine()) != null) {
-                filePath = "Resources/"+line;
+                filePath = "Resources/" + line;
                 m = pLanguage.matcher(line);
-                language = m.group().substring(m.group().length()-2);
+                language = m.group().substring(m.group().length() - 2);
                 m = pName.matcher(line);
-                name = m.group().substring(m.group().length()-5,m.group().length()-1);
+                name = m.group().substring(m.group().length() - 5, m.group().length() - 1);
                 m = pFormat.matcher(line);
                 format = m.group().substring(1);
-                result.add(new Audio(0,name,filePath,format,getIdConvertedLanguageName(language)));
+                result.add(new Audio(0, name, filePath, format, getIdConvertedLanguageName(language)));
             }
             reader.close();
             System.out.println("[extractListAudio]File read");
@@ -209,25 +219,26 @@ public final class AdminDatabase {
     protected static void adminShowQuestions() {
         System.out.println(db.getAllQuestions());
     }
-    
+
     /**
      * Returns the id of the language searched.
+     *
      * @param language Language's name searched.
      * @return int
      */
-    protected static int getIdConvertedLanguageName(String language){
-        switch(language){
+    protected static int getIdConvertedLanguageName(String language) {
+        switch (language) {
             case "fr":
-                return(db.getLanguageByName("French"));
+                return (db.getLanguageByName("French"));
             case "en":
-                return(db.getLanguageByName("English"));
+                return (db.getLanguageByName("English"));
             case "pt":
-                return(db.getLanguageByName("Portuguese"));
+                return (db.getLanguageByName("Portuguese"));
             case "jp":
-                return(db.getLanguageByName("Japonese"));
+                return (db.getLanguageByName("Japonese"));
             case "us":
-                return(db.getLanguageByName("American"));
-            default :
+                return (db.getLanguageByName("American"));
+            default:
                 System.out.println("[getIdConvertedLanguageName]Cannot convert :" + language);
         }
         return 0;
