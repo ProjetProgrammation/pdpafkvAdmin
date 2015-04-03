@@ -47,9 +47,9 @@ public final class AdminDatabase {
         BufferedReader reader = null;
         String line;
         //Initializing the patterns to extract datas
-        Pattern pLanguage = Pattern.compile("[^_]*_[^_]*_[^_]*_[^_]*_[^_]$[^_]$");
-        Pattern pName = Pattern.compile("[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_*\\.");
-        Pattern pFormat = Pattern.compile("\\.*");
+        Pattern pLanguage = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]?[^_]?");
+        Pattern pName = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_*\\.");
+        Pattern pFormat = Pattern.compile("\\.[^_]*$");
         Matcher m;
         String language, name, format, filePath;
 
