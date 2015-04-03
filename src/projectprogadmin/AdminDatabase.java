@@ -99,11 +99,11 @@ public final class AdminDatabase {
         BufferedReader reader = null;
         String line;
         //Initializing the patterns to extract datas
-        Pattern pLanguage = Pattern.compile("[^_]*_[^_]*_[^_]*_[^_]*_[^_]$[^_]$");
-        Pattern pName = Pattern.compile("[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_*\\.");
-        Pattern pFormat = Pattern.compile("\\.*");
+        Pattern pLanguage = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]?[^_]?");
+        Pattern pName = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[a-zA-Z_0-9]{4}\\.");
+        Pattern pFormat = Pattern.compile("\\.[^_]*$");
         Matcher m;
-        String language, name, format, filePath;
+        String language = "", name = "", format = "", filePath;
 
         try {
             reader = new BufferedReader(new FileReader(path));
@@ -112,11 +112,17 @@ public final class AdminDatabase {
             while ((line = reader.readLine()) != null) {
                 filePath = "Resources/" + line;
                 m = pLanguage.matcher(line);
-                language = m.group().substring(m.group().length() - 2);
+                while (m.find()) {
+                    language = m.group().substring(m.group().length() - 2);
+                }
                 m = pName.matcher(line);
-                name = m.group().substring(m.group().length() - 5, m.group().length() - 1);
+                while (m.find()) {
+                    name = m.group().substring(m.group().length() - 10, m.group().length() - 1);
+                }
                 m = pFormat.matcher(line);
-                format = m.group().substring(1);
+                while (m.find()) {
+                    format = m.group().substring(1);
+                }
                 result.add(new Audio(0, name, filePath, format, getIdConvertedLanguageName(language)));
             }
             reader.close();
