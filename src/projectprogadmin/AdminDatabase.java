@@ -270,8 +270,34 @@ public final class AdminDatabase {
      * @param path
      * @param mediaType
      */
-    protected static void adminRmMedias(String path, String mediaType) {
-        //TODO
+    protected static void adminRmMedias(String path, String mediaType) throws IOException {
+        switch (mediaType) {
+            case "Video":
+                ArrayList<Video> tmpVideoList;
+                tmpVideoList = new ArrayList<>(extractListVideo(path));
+                for (int i = 0; i < tmpVideoList.size(); i++) {
+                    db.rmVideo(tmpVideoList.get(i).getName(),
+                            tmpVideoList.get(i).getFormat());
+                }
+                break;
+            case "Audio":
+                ArrayList<Audio> tmpAudioList;
+                tmpAudioList = new ArrayList<>(extractListAudio(path));
+                for (int i = 0; i < tmpAudioList.size(); i++) {
+                    db.rmAudio(tmpAudioList.get(i).getName(),
+                            tmpAudioList.get(i).getFormat());
+                }
+                break;
+            case "Question":
+                ArrayList<Question> tmpQuestionList;
+                tmpQuestionList = new ArrayList<>(extractListQuestion(path));
+                for (int i = 0; i < tmpQuestionList.size(); i++) {
+                    db.rmQuestion(tmpQuestionList.get(i).getContent());
+                }
+                break;
+            default:
+                System.out.println("Wrong media type : " + mediaType);
+        }
     }
 
     /**
