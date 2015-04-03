@@ -25,10 +25,10 @@ import java.util.regex.Pattern;
  * </p>
  * <ul>
  * <li>Video :
- * [0-9]*_[0-9]*_[0-9]*_[a-zA-Z0-9]*_[a-zA-Z0-9]{2}_[a-zA-Z0-9]*_[a-zA-Z0-9]{9}\\.[a-zA-Z0-9]*
+ * [0-9]*_[0-9]*_[0-9]*_[a-zA-Z0-9]*_[a-z]{2}_[a-zA-Z0-9]*_[a-zA-Z0-9]{9}\\.[a-zA-Z0-9]*
  * for example 2013_3_20_S33_fr_L1_SINC_B_ok.mp4</li>
  * <li>Audio :
- * [0-9]*_[0-9]*_[0-9]*_[a-zA-Z0-9]*_[a-zA-Z0-9]{2}_[a-zA-Z0-9]*_[a-zA-Z0-9]{4}\\.[a-zA-Z0-9]*
+ * [0-9]*_[0-9]*_[0-9]*_[a-zA-Z0-9]*_[a-z]{2}_[a-zA-Z0-9]*_[a-zA-Z0-9]{4}\\.[a-zA-Z0-9]*
  * for example 2013_3_20_S33_fr_L1_SINC.wav</li>
  * </ul>
  *
@@ -117,7 +117,7 @@ public final class AdminDatabase {
                 }
                 m = pName.matcher(line);
                 while (m.find()) {
-                    name = m.group().substring(m.group().length() - 10, m.group().length() - 1);
+                    name = m.group().substring(m.group().length() - 5, m.group().length() - 1);
                 }
                 m = pFormat.matcher(line);
                 while (m.find()) {
@@ -136,7 +136,19 @@ public final class AdminDatabase {
 
     /**
      * Extracts an ArrayList of Question from the file containing all metadatas
-     * about those medias.
+     * about those medias. In the file, data must be formatted like :
+     * <ul>
+     *  <li>\<Content of the question\></il>
+     *  <li>\<Video file name (with its extension)\></li>
+     *  <li>\<Audio file name (with its extension)\></li>
+     *  <li>\<Content of the question\></il>
+     *  <li>\<Video file name (with its extension)\></li>
+     *  <li>\<Audio file name (with its extension)\></li>
+     *  <li>\<Content of the question\></il>
+     *  <li>\<Video file name (with its extension)\></li>
+     *  <li>\<Audio file name (with its extension)\></li>
+     *  <li>...</li>
+     * </ul>
      *
      * @param path File's path containing metadatas.
      * @return ArrayList\<Question\>
@@ -144,9 +156,66 @@ public final class AdminDatabase {
     private static ArrayList<Question> extractListQuestion(String path) {
         ArrayList<Question> result;
         result = new ArrayList<>();
+        BufferedReader reader = null;
+        String line;
+        //Initializing the patterns to extract datas
+        Pattern pLanguage = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]?[^_]?");
+        Pattern pName = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[a-zA-Z_0-9]{4}\\.");
+        Pattern pFormat = Pattern.compile("\\.[^_]*$");
+        Matcher m;
+        String language = "",
+                nameVideo = "",
+                formatVideo = "",
+                nameAudio = "",
+                formatAudio = "",
+                content = "";
+        int idVideo = 0, idAudio = 0;
 
-        //TODO
-        //Reading of the file
+        try {
+            reader = new BufferedReader(new FileReader(path));
+            //Reading the file by line
+            System.out.println("[extractListQuestion]Begining of the file reading");
+            while ((line = reader.readLine()) != null) {
+                
+                //Extracting data from the first line : the question content line
+                content = line;
+                
+                //Extracting datas from the second line : the video line
+                line = reader.readLine();
+                m = pName.matcher(line);
+                while (m.find()) {
+                    nameVideo = m.group().substring(m.group().length() - 10, m.group().length() - 1);
+                }
+                m = pFormat.matcher(line);
+                while (m.find()) {
+                    formatVideo = m.group().substring(1);
+                }
+                idVideo = db.searchVideoByNameFormat(nameVideo, formatVideo).getId();
+                
+                //Extracting datas from the third line : the audio line
+                line = reader.readLine();
+                m = pName.matcher(line);
+                while (m.find()) {
+                    nameAudio = m.group().substring(m.group().length() - 5, m.group().length() - 1);
+                }
+                m = pFormat.matcher(line);
+                while (m.find()) {
+                    formatAudio = m.group().substring(1);
+                }
+                idAudio = db.searchAudioByNameFormat(nameAudio, formatAudio).getId();
+                //Language extracting from the audio
+                m = pLanguage.matcher(line);
+                while (m.find()) {
+                    language = m.group().substring(m.group().length() - 2);
+                }
+                result.add(new Question(0, content, idVideo, idAudio, getIdConvertedLanguageName(language)));
+            }
+            reader.close();
+            System.out.println("[extractListQuestion]File read");
+        } catch (IOException e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
         return result;
     }
 
