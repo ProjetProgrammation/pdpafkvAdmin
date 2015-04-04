@@ -52,6 +52,7 @@ public class ProjectProgAdmin {
                     default:
                         System.out.println("Wrong argument : " + args[1] + "\nUse audio or video instead.");
                 }
+                break;
             case "rm":
                 switch (args[1]) {
                     case "video":
@@ -65,6 +66,7 @@ public class ProjectProgAdmin {
                     default:
                         System.out.println("Wrong argument : " + args[1] + "\nUse audio or video instead.");
                 }
+                break;
             case "ls":
                 switch (args[1]) {
                     case "video":
@@ -79,6 +81,9 @@ public class ProjectProgAdmin {
                     default:
                         System.out.println("Wrong argument : " + args[1] + "\nUse 'question', 'audio' or 'video' instead.");
                 }
+                break;
+            default:
+                System.out.println("Wrong argument : " + args[0] + "\nUse 'add', 'rm' or 'ls' instead.");
         }
     }
 
