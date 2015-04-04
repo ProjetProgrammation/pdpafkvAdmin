@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  *
@@ -21,46 +22,48 @@ public class CreationThumbnails {
     String pathFileGif;
     Picture picture;
     
-    public CreationThumbnails(String getpathFile, String getname) throws IOException {
-        String filePath = System.getProperty("user.dir") + getpathFile;
-        String outputFileDB = "\\Ressources\\"+getname;
+    public CreationThumbnails(String getpathFile, String getname) {
+        String filePath = System.getProperty("user.dir") + FilenameUtils.separatorsToSystem(getpathFile);
+        String outputFileDB = FilenameUtils.separatorsToSystem("\\Resources\\Video\\")+getname;
         this.createPicture(filePath, outputFileDB);
         this.createGif(outputFileDB);
     }
     
-    private void createPicture(String filePath, String outputFileDB) throws IOException{
+    private void createPicture(String filePath, String outputFileDB){
         this.picture = new Picture(filePath);
         this.pathFilePicture = this.picture.dumpImageToFile(outputFileDB);
     }
     
-    private void createGif(String outputFileDB) throws IOException{
+    private void createGif(String outputFileDB){
         
         if (this.picture.getBufferedImage().size() > 1) {
-            // grab the output image type from the first image in the sequence
-            BufferedImage firstImage = this.picture.getBufferedImage().get(0);
-            
-            // create a new BufferedOutputStream with the last argument
-            ImageOutputStream output = new FileImageOutputStream(new File(System.getProperty("user.dir")+outputFileDB+".gif"));
-
-            // create a gif sequence with the type of the first image, 1 second
-            // between frames, which loops continuously
-            Gif writer = new Gif(output, firstImage.getType(), 50, false);
-
-            // write out the first image to our sequence...
-            writer.writeToSequence(firstImage);
-            for (int i = 1; i < this.picture.getBufferedImage().size(); i++) {
-                BufferedImage nextImage = this.picture.getBufferedImage().get(i);
-                writer.writeToSequence(nextImage);
+            try {
+                // grab the output image type from the first image in the sequence
+                BufferedImage firstImage = this.picture.getBufferedImage().get(0);
+                
+                // create a new BufferedOutputStream with the last argument
+                ImageOutputStream output = new FileImageOutputStream(new File(System.getProperty("user.dir")+outputFileDB+".gif"));
+                
+                // create a gif sequence with the type of the first image, 1 second
+                // between frames, which loops continuously
+                Gif writer = new Gif(output, firstImage.getType(), 50, false);
+                
+                // write out the first image to our sequence...
+                writer.writeToSequence(firstImage);
+                for (int i = 1; i < this.picture.getBufferedImage().size(); i++) {
+                    BufferedImage nextImage = this.picture.getBufferedImage().get(i);
+                    writer.writeToSequence(nextImage);
+                }
+                
+                writer.close();
+                output.close();
+                
+                this.pathFileGif = outputFileDB+".gif";
+            } catch (IOException ex) {
+                System.out.println("[CreateGif]Creation of file of gif is failed");
             }
-
-            writer.close();
-            output.close();
-            
-            this.pathFileGif = outputFileDB+".gif";
-            
         } else {
-            System.out.println(
-                    "Usage: java GifSequenceWriter [list of gif files] [output file]");
+            System.out.println("[CreateGif]One frame in video");
         }
     }
 
