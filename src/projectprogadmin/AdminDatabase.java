@@ -53,7 +53,7 @@ public final class AdminDatabase {
         String line;
         //Initializing the patterns to extract datas
         Pattern pLanguage = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]?[^_]?");
-        Pattern pName = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[a-zA-Z_0-9]{9}\\.");
+        Pattern pName = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[a-zA-Z_0-9]*\\.");
         Pattern pFormat = Pattern.compile("\\.[^_]*$");
         Matcher m;
         String language = "", name = "", format = "", filePath;
@@ -70,7 +70,7 @@ public final class AdminDatabase {
                 }
                 m = pName.matcher(line);
                 while (m.find()) {
-                    name = m.group().substring(m.group().length() - 10, m.group().length() - 1);
+                    name = m.group().substring(0, m.group().length() - 1);
                 }
                 m = pFormat.matcher(line);
                 while (m.find()) {
@@ -101,7 +101,7 @@ public final class AdminDatabase {
         String line;
         //Initializing the patterns to extract datas
         Pattern pLanguage = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]?[^_]?");
-        Pattern pName = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[a-zA-Z_0-9]{4}\\.");
+        Pattern pName = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[a-zA-Z_0-9]*\\.");
         Pattern pFormat = Pattern.compile("\\.[^_]*$");
         Matcher m;
         String language = "", name = "", format = "", filePath;
@@ -118,7 +118,7 @@ public final class AdminDatabase {
                 }
                 m = pName.matcher(line);
                 while (m.find()) {
-                    name = m.group().substring(m.group().length() - 5, m.group().length() - 1);
+                    name = m.group().substring(0, m.group().length() - 1);
                 }
                 m = pFormat.matcher(line);
                 while (m.find()) {

@@ -20,7 +20,7 @@ public class ProjectProgAdmin {
      *
      * @param args The command line arguments.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         switch (args[0]) {
             case "add":
                 switch (args[1]) {
