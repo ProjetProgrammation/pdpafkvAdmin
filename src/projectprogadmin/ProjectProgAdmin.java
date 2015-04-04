@@ -19,6 +19,7 @@ public class ProjectProgAdmin {
      *
      *
      * @param args The command line arguments.
+     * @throws java.io.IOException
      */
     public static void main(String[] args) throws IOException {
         AdminDatabase.createDb();
