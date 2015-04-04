@@ -36,11 +36,17 @@ public class Picture {
         while (mediaReader.readPacket() == null){};    
     }
     
-    public String dumpImageToFile(String outputFile) throws IOException {
+    public String dumpImageToFile(String outputFile) {
         BufferedImage image = sFrame.getImages().get(0);
-            String outputFilename = outputFile + ".jpg";
-            ImageIO.write(image, "jpg", new File(System.getProperty("user.dir") + outputFilename));
+        String outputFilename = outputFile + ".jpg";
+        try {
+            File f = new File(System.getProperty("user.dir") + outputFilename);
+            ImageIO.write(image, "jpg", f);
             return outputFilename;        
+        } catch (IOException ex) {
+            System.out.println("[dumpImageToFile]Creation of file of picture is failed");
+            return null;
+        }
     }
     
     public ArrayList<BufferedImage> getBufferedImage(){

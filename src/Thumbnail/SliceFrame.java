@@ -18,14 +18,14 @@ import java.util.ArrayList;
  */
 public class SliceFrame extends MediaListenerAdapter {
         
-    private final double SECONDS_BETWEEN_FRAMES = 0.01;
+    private final double SECONDS_BETWEEN_FRAMES = 0.001;
     private final long MICRO_SECONDS_BETWEEN_FRAMES = (long) (Global.DEFAULT_PTS_PER_SECOND * SECONDS_BETWEEN_FRAMES);
     // The video stream index, used to ensure we display frames from one and
     // only one video stream from the media container.
     private static int mVideoStreamIndex = -1;
     // Time of last frame write
     private static long mLastPtsWrite = Global.NO_PTS;
-    private ArrayList<BufferedImage> images = new ArrayList();
+    private final ArrayList<BufferedImage> images = new ArrayList();
     
     
     
