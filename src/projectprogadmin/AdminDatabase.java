@@ -39,6 +39,10 @@ public final class AdminDatabase {
 
     private static DataBase db;
 
+    public static void createDb(){
+        db = new DataBase();
+    }
+    
     /**
      * Extracts an ArrayList of Video from the file containing all metadatas
      * about those medias.
@@ -63,7 +67,7 @@ public final class AdminDatabase {
             //Reading the file by line
             System.out.println("[extractListVideo]Begining of the file reading");
             while ((line = reader.readLine()) != null) {
-                filePath = "Resources/" + line;
+                filePath = "/Resources/Video/" + line;
                 m = pLanguage.matcher(line);
                 while (m.find()) {
                     language = m.group().substring(m.group().length() - 2);
@@ -111,7 +115,7 @@ public final class AdminDatabase {
             //Reading the file by line
             System.out.println("[extractListAudio]Begining of the file reading");
             while ((line = reader.readLine()) != null) {
-                filePath = "Resources/" + line;
+                filePath = "/Resources/Audio/" + line;
                 m = pLanguage.matcher(line);
                 while (m.find()) {
                     language = m.group().substring(m.group().length() - 2);

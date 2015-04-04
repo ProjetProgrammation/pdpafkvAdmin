@@ -21,6 +21,7 @@ public class ProjectProgAdmin {
      * @param args The command line arguments.
      */
     public static void main(String[] args) throws IOException {
+        AdminDatabase.createDb();
         switch (args[0]) {
             case "add":
                 switch (args[1]) {
