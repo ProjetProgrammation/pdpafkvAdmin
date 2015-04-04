@@ -9,6 +9,7 @@ import BDD.Audio;
 import BDD.DataBase;
 import BDD.Question;
 import BDD.Video;
+import Thumbnail.CreationThumbnails;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -231,12 +232,13 @@ public final class AdminDatabase {
                 ArrayList<Video> tmpVideoList;
                 tmpVideoList = new ArrayList<>(extractListVideo(path));
                 for (int i = 0; i < tmpVideoList.size(); i++) {
+                    CreationThumbnails cThumb = new CreationThumbnails(tmpVideoList.get(i).getFilePath(), tmpVideoList.get(i).getName());
                     db.addVideo(tmpVideoList.get(i).getName(),
                             tmpVideoList.get(i).getFilePath(),
                             tmpVideoList.get(i).getFormat(),
                             db.getLanguageById(tmpVideoList.get(i).getIdLanguage()),
-                            tmpVideoList.get(i).getThumbnailPicPath(),
-                            tmpVideoList.get(i).getThumbnailGifPath());
+                            cThumb.getPathFilePicture(),
+                            cThumb.getPathFileGif());
                 }
                 break;
             case "Audio":
