@@ -189,7 +189,7 @@ public final class AdminDatabase {
                 line = reader.readLine();
                 m = pName.matcher(line);
                 while (m.find()) {
-                    nameVideo = m.group().substring(m.group().length() - 10, m.group().length() - 1);
+                    nameVideo = m.group().substring(0, m.group().length() - 1);
                 }
                 m = pFormat.matcher(line);
                 while (m.find()) {
@@ -201,7 +201,7 @@ public final class AdminDatabase {
                 line = reader.readLine();
                 m = pName.matcher(line);
                 while (m.find()) {
-                    nameAudio = m.group().substring(m.group().length() - 5, m.group().length() - 1);
+                    nameAudio = m.group().substring(0, m.group().length() - 1);
                 }
                 m = pFormat.matcher(line);
                 while (m.find()) {
