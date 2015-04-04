@@ -328,7 +328,14 @@ public final class AdminDatabase {
     }
 
     /**
-     * Returns the id of the language searched.
+     * <p>Returns the id of the language searched. The nomenclature is the following :</p>
+     * <ul>
+     *  <li>fr = French</li>
+     *  <li>en = English</li>
+     *  <li>pt = Portuguese</li>
+     *  <li>jp = Japonese</li>
+     *  <li>us = American</li>
+     * </ul>
      *
      * @param language Language's name searched.
      * @return int
