@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>AdminDatabase.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;ProjectProgAdmin&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">projectprogadmin</a> &gt; <span class="el_source">AdminDatabase.java</span></div><h1>AdminDatabase.java</h1><pre class="source lang-java linenums">package projectprogadmin;
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+import BDD.Audio;
+import BDD.DataBase;
+import BDD.Language;
+import BDD.Question;
+import BDD.Video;
+import Thumbnail.CreationThumbnails;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * &lt;p&gt;
+ * Use this class to manage the database.
+ * &lt;b&gt;Note that everything happening here is not shown in the user interface but
+ * in the command line.&lt;/b&gt;
+ * Notice that media files's name need to be formatted like :
+ * &lt;/p&gt;
+ * &lt;ul&gt;
+ * &lt;li&gt;Video :
+ * [0-9]*_[0-9]*_[0-9]*_[a-zA-Z0-9]*_[a-z]{2}_[a-zA-Z0-9]*_[a-zA-Z0-9]{9}\\.[a-zA-Z0-9]*
+ * for example 2013_3_20_S33_fr_L1_SINC_B_ok.mp4&lt;/li&gt;
+ * &lt;li&gt;Audio :
+ * [0-9]*_[0-9]*_[0-9]*_[a-zA-Z0-9]*_[a-z]{2}_[a-zA-Z0-9]*_[a-zA-Z0-9]{4}\\.[a-zA-Z0-9]*
+ * for example 2013_3_20_S33_fr_L1_SINC.wav&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * @author akervadec
+ */
+<span class="fc" id="L39">public final class AdminDatabase {</span>
+
+    private static DataBase db;
+
+    public static void createDb(){
+<span class="fc" id="L44">        db = new DataBase();</span>
+<span class="fc" id="L45">    }</span>
+    
+    /**
+     * Extracts an ArrayList of Video from the file containing all metadatas
+     * about those medias.
+     *
+     * @param path File's path containing metadatas.
+     * @return ArrayList\&lt;Video\&gt;
+     */
+    private static ArrayList&lt;Video&gt; extractListVideo(String path) throws IOException {
+        ArrayList&lt;Video&gt; result;
+<span class="fc" id="L56">        result = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L57">        BufferedReader reader = null;</span>
+        String line;
+        //Initializing the patterns to extract datas
+<span class="fc" id="L60">        Pattern pLanguage = Pattern.compile(&quot;^[^_]*_[^_]*_[^_]*_[^_]*_[^_]?[^_]?&quot;);</span>
+<span class="fc" id="L61">        Pattern pName = Pattern.compile(&quot;^[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[a-zA-Z_0-9]*\\.&quot;);</span>
+<span class="fc" id="L62">        Pattern pFormat = Pattern.compile(&quot;\\.[^_]*$&quot;);</span>
+        Matcher m;
+<span class="fc" id="L64">        String language = &quot;&quot;, name = &quot;&quot;, format = &quot;&quot;, filePath;</span>
+
+        try {
+<span class="fc" id="L67">            reader = new BufferedReader(new FileReader(path));</span>
+            //Reading the file by line
+<span class="fc" id="L69">            System.out.println(&quot;[extractListVideo]Begining of the file reading&quot;);</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">            while ((line = reader.readLine()) != null) {</span>
+<span class="fc" id="L71">                filePath = &quot;/Resources/Video/&quot; + line;</span>
+<span class="fc" id="L72">                m = pLanguage.matcher(line);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">                while (m.find()) {</span>
+<span class="fc" id="L74">                    language = m.group().substring(m.group().length() - 2);</span>
+                }
+<span class="fc" id="L76">                m = pName.matcher(line);</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">                while (m.find()) {</span>
+<span class="fc" id="L78">                    name = m.group().substring(0, m.group().length() - 1);</span>
+                }
+<span class="fc" id="L80">                m = pFormat.matcher(line);</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">                while (m.find()) {</span>
+<span class="fc" id="L82">                    format = m.group().substring(1);</span>
+                }
+<span class="fc" id="L84">                result.add(new Video(0, name, filePath, format, getIdConvertedLanguageName(language)));</span>
+            }
+<span class="fc" id="L86">            reader.close();</span>
+<span class="fc" id="L87">            System.out.println(&quot;[extractListVideo]File read&quot;);</span>
+<span class="nc" id="L88">        } catch (IOException e) {</span>
+<span class="nc" id="L89">            System.err.println(e.getClass().getName() + &quot;: &quot; + e.getMessage());</span>
+<span class="nc" id="L90">            System.exit(0);</span>
+<span class="fc" id="L91">        }</span>
+<span class="fc" id="L92">        return result;</span>
+    }
+
+    /**
+     * Extracts an ArrayList of Audio from the file containing all metadatas
+     * about those medias.
+     *
+     * @param path File's path containing metadatas.
+     * @return ArrayList\&lt;Audio\&gt;
+     */
+    private static ArrayList&lt;Audio&gt; extractListAudio(String path) {
+        ArrayList&lt;Audio&gt; result;
+<span class="fc" id="L104">        result = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L105">        BufferedReader reader = null;</span>
+        String line;
+        //Initializing the patterns to extract datas
+<span class="fc" id="L108">        Pattern pLanguage = Pattern.compile(&quot;^[^_]*_[^_]*_[^_]*_[^_]*_[^_]?[^_]?&quot;);</span>
+<span class="fc" id="L109">        Pattern pName = Pattern.compile(&quot;^[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[a-zA-Z_0-9]*\\.&quot;);</span>
+<span class="fc" id="L110">        Pattern pFormat = Pattern.compile(&quot;\\.[^_]*$&quot;);</span>
+        Matcher m;
+<span class="fc" id="L112">        String language = &quot;&quot;, name = &quot;&quot;, format = &quot;&quot;, filePath;</span>
+
+        try {
+<span class="fc" id="L115">            reader = new BufferedReader(new FileReader(path));</span>
+            //Reading the file by line
+<span class="fc" id="L117">            System.out.println(&quot;[extractListAudio]Begining of the file reading&quot;);</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">            while ((line = reader.readLine()) != null) {</span>
+<span class="fc" id="L119">                filePath = &quot;/Resources/Audio/&quot; + line;</span>
+<span class="fc" id="L120">                m = pLanguage.matcher(line);</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">                while (m.find()) {</span>
+<span class="fc" id="L122">                    language = m.group().substring(m.group().length() - 2);</span>
+                }
+<span class="fc" id="L124">                m = pName.matcher(line);</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">                while (m.find()) {</span>
+<span class="fc" id="L126">                    name = m.group().substring(0, m.group().length() - 1);</span>
+                }
+<span class="fc" id="L128">                m = pFormat.matcher(line);</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">                while (m.find()) {</span>
+<span class="fc" id="L130">                    format = m.group().substring(1);</span>
+                }
+<span class="fc" id="L132">                result.add(new Audio(0, name, filePath, format, getIdConvertedLanguageName(language)));</span>
+            }
+<span class="fc" id="L134">            reader.close();</span>
+<span class="fc" id="L135">            System.out.println(&quot;[extractListAudio]File read&quot;);</span>
+<span class="nc" id="L136">        } catch (IOException e) {</span>
+<span class="nc" id="L137">            System.err.println(e.getClass().getName() + &quot;: &quot; + e.getMessage());</span>
+<span class="nc" id="L138">            System.exit(0);</span>
+<span class="fc" id="L139">        }</span>
+<span class="fc" id="L140">        return result;</span>
+    }
+
+    /**
+     * Extracts an ArrayList of Question from the file containing all metadatas
+     * about those medias. In the file, data must be formatted like :
+     * &lt;ul&gt;
+     *  &lt;li&gt;\&lt;Content of the question\&gt;&lt;/il&gt;
+     *  &lt;li&gt;\&lt;Video file name (with its extension)\&gt;&lt;/li&gt;
+     *  &lt;li&gt;\&lt;Audio file name (with its extension)\&gt;&lt;/li&gt;
+     *  &lt;li&gt;\&lt;Content of the question\&gt;&lt;/il&gt;
+     *  &lt;li&gt;\&lt;Video file name (with its extension)\&gt;&lt;/li&gt;
+     *  &lt;li&gt;\&lt;Audio file name (with its extension)\&gt;&lt;/li&gt;
+     *  &lt;li&gt;\&lt;Content of the question\&gt;&lt;/il&gt;
+     *  &lt;li&gt;\&lt;Video file name (with its extension)\&gt;&lt;/li&gt;
+     *  &lt;li&gt;\&lt;Audio file name (with its extension)\&gt;&lt;/li&gt;
+     *  &lt;li&gt;...&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * @param path File's path containing metadatas.
+     * @return ArrayList\&lt;Question\&gt;
+     */
+    private static ArrayList&lt;Question&gt; extractListQuestion(String path) {
+        ArrayList&lt;Question&gt; result;
+<span class="fc" id="L164">        result = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L165">        BufferedReader reader = null;</span>
+        String line;
+        //Initializing the patterns to extract datas
+<span class="fc" id="L168">        Pattern pLanguage = Pattern.compile(&quot;^[^_]*_[^_]*_[^_]*_[^_]*_[^_]?[^_]?&quot;);</span>
+<span class="fc" id="L169">        Pattern pName = Pattern.compile(&quot;^[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[a-zA-Z_0-9]*\\.&quot;);</span>
+<span class="fc" id="L170">        Pattern pFormat = Pattern.compile(&quot;\\.[^_]*$&quot;);</span>
+        Matcher m;
+<span class="fc" id="L172">        String language = &quot;&quot;,</span>
+<span class="fc" id="L173">                nameVideo = &quot;&quot;,</span>
+<span class="fc" id="L174">                formatVideo = &quot;&quot;,</span>
+<span class="fc" id="L175">                nameAudio = &quot;&quot;,</span>
+<span class="fc" id="L176">                formatAudio = &quot;&quot;,</span>
+<span class="fc" id="L177">                content = &quot;&quot;;</span>
+<span class="fc" id="L178">        int idVideo = 0, idAudio = 0;</span>
+
+        try {
+<span class="fc" id="L181">            reader = new BufferedReader(new FileReader(path));</span>
+            //Reading the file by line
+<span class="fc" id="L183">            System.out.println(&quot;[extractListQuestion]Begining of the file reading&quot;);</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">            while ((line = reader.readLine()) != null) {</span>
+                
+                //Extracting data from the first line : the question content line
+<span class="fc" id="L187">                content = line;</span>
+                
+                //Extracting datas from the second line : the video line
+<span class="fc" id="L190">                line = reader.readLine();</span>
+<span class="fc" id="L191">                m = pName.matcher(line);</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">                while (m.find()) {</span>
+<span class="fc" id="L193">                    nameVideo = m.group().substring(0, m.group().length() - 1);</span>
+                }
+<span class="fc" id="L195">                m = pFormat.matcher(line);</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">                while (m.find()) {</span>
+<span class="fc" id="L197">                    formatVideo = m.group().substring(1);</span>
+                }
+<span class="fc" id="L199">                idVideo = db.searchVideoByNameFormat(nameVideo, formatVideo).getId();</span>
+                //Extracting datas from the third line : the audio line
+<span class="fc" id="L201">                line = reader.readLine();</span>
+<span class="fc" id="L202">                m = pName.matcher(line);</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">                while (m.find()) {</span>
+<span class="fc" id="L204">                    nameAudio = m.group().substring(0, m.group().length() - 1);</span>
+                }
+<span class="fc" id="L206">                m = pFormat.matcher(line);</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">                while (m.find()) {</span>
+<span class="fc" id="L208">                    formatAudio = m.group().substring(1);</span>
+                }
+<span class="fc" id="L210">                idAudio = db.searchAudioByNameFormat(nameAudio, formatAudio).getId();</span>
+                //Language extracting from the audio
+<span class="fc" id="L212">                m = pLanguage.matcher(line);</span>
+<span class="fc bfc" id="L213" title="All 2 branches covered.">                while (m.find()) {</span>
+<span class="fc" id="L214">                    language = m.group().substring(m.group().length() - 2);</span>
+                }
+<span class="fc" id="L216">                result.add(new Question(0, content, idVideo, idAudio, getIdConvertedLanguageName(language)));</span>
+            }
+<span class="fc" id="L218">            reader.close();</span>
+<span class="fc" id="L219">            System.out.println(&quot;[extractListQuestion]File read&quot;);</span>
+<span class="nc" id="L220">        } catch (IOException e) {</span>
+<span class="nc" id="L221">             System.err.println(e.getClass().getName() + &quot;: &quot; + e.getMessage());</span>
+<span class="nc" id="L222">            System.exit(0);</span>
+<span class="fc" id="L223">        }</span>
+<span class="fc" id="L224">        return result;</span>
+    }
+
+    /**
+     * Adds medias from a text file to the database.
+     *
+     * @param path
+     * @param mediaType
+     */
+    protected static void adminAddMedias(String path, String mediaType) throws IOException {
+<span class="pc bpc" id="L234" title="3 of 14 branches missed.">        switch (mediaType) {</span>
+            case &quot;Video&quot;:
+                ArrayList&lt;Video&gt; tmpVideoList;
+<span class="fc" id="L237">                tmpVideoList = new ArrayList&lt;&gt;(extractListVideo(path));</span>
+<span class="fc bfc" id="L238" title="All 2 branches covered.">                for (int i = 0; i &lt; tmpVideoList.size(); i++) {</span>
+<span class="fc" id="L239">                    CreationThumbnails cThumb = new CreationThumbnails(tmpVideoList.get(i).getFilePath(), tmpVideoList.get(i).getName());</span>
+<span class="fc" id="L240">                    db.addVideo(tmpVideoList.get(i).getName(),</span>
+<span class="fc" id="L241">                            tmpVideoList.get(i).getFilePath(),</span>
+<span class="fc" id="L242">                            tmpVideoList.get(i).getFormat(),</span>
+<span class="fc" id="L243">                            db.getLanguageById(tmpVideoList.get(i).getIdLanguage()),</span>
+<span class="fc" id="L244">                            cThumb.getPathFilePicture(),</span>
+<span class="fc" id="L245">                            cThumb.getPathFileGif());</span>
+                }
+<span class="fc" id="L247">                break;</span>
+            case &quot;Audio&quot;:
+                ArrayList&lt;Audio&gt; tmpAudioList;
+<span class="fc" id="L250">                tmpAudioList = new ArrayList&lt;&gt;(extractListAudio(path));</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">                for (int i = 0; i &lt; tmpAudioList.size(); i++) {</span>
+<span class="fc" id="L252">                    db.addAudio(tmpAudioList.get(i).getName(),</span>
+<span class="fc" id="L253">                            tmpAudioList.get(i).getFilePath(),</span>
+<span class="fc" id="L254">                            tmpAudioList.get(i).getFormat(),</span>
+<span class="fc" id="L255">                            db.getLanguageById(tmpAudioList.get(i).getIdLanguage()));</span>
+                }
+<span class="fc" id="L257">                break;</span>
+            case &quot;Question&quot;:
+                ArrayList&lt;Question&gt; tmpQuestionList;
+<span class="fc" id="L260">                tmpQuestionList = new ArrayList&lt;&gt;(extractListQuestion(path));</span>
+<span class="fc bfc" id="L261" title="All 2 branches covered.">                for (int i = 0; i &lt; tmpQuestionList.size(); i++) {</span>
+<span class="fc" id="L262">                    db.addQuestion(tmpQuestionList.get(i).getContent(),</span>
+<span class="fc" id="L263">                            db.searchVideoById(tmpQuestionList.get(i).getIdVideo()),</span>
+<span class="fc" id="L264">                            db.searchAudioById(tmpQuestionList.get(i).getIdAudio()),</span>
+<span class="fc" id="L265">                            db.getLanguageById(tmpQuestionList.get(i).getIdLanguage()));</span>
+                }
+<span class="fc" id="L267">                break;</span>
+            default:
+<span class="fc" id="L269">                System.out.println(&quot;Wrong media type : &quot; + mediaType);</span>
+        }
+<span class="fc" id="L271">    }</span>
+
+    /**
+     * Removes medias from the database.
+     *
+     * @param path
+     * @param mediaType
+     */
+    protected static void adminRmMedias(String path, String mediaType) throws IOException {
+<span class="pc bpc" id="L280" title="3 of 14 branches missed.">        switch (mediaType) {</span>
+            case &quot;Video&quot;:
+                ArrayList&lt;Video&gt; tmpVideoList;
+<span class="fc" id="L283">                tmpVideoList = new ArrayList&lt;&gt;(extractListVideo(path));</span>
+<span class="fc bfc" id="L284" title="All 2 branches covered.">                for (int i = 0; i &lt; tmpVideoList.size(); i++) {</span>
+<span class="fc" id="L285">                    db.rmVideo(tmpVideoList.get(i).getName(),</span>
+<span class="fc" id="L286">                            tmpVideoList.get(i).getFormat());</span>
+                }
+<span class="fc" id="L288">                break;</span>
+            case &quot;Audio&quot;:
+                ArrayList&lt;Audio&gt; tmpAudioList;
+<span class="fc" id="L291">                tmpAudioList = new ArrayList&lt;&gt;(extractListAudio(path));</span>
+<span class="fc bfc" id="L292" title="All 2 branches covered.">                for (int i = 0; i &lt; tmpAudioList.size(); i++) {</span>
+<span class="fc" id="L293">                    db.rmAudio(tmpAudioList.get(i).getName(),</span>
+<span class="fc" id="L294">                            tmpAudioList.get(i).getFormat());</span>
+                }
+<span class="fc" id="L296">                break;</span>
+            case &quot;Question&quot;:
+                ArrayList&lt;Question&gt; tmpQuestionList;
+<span class="fc" id="L299">                tmpQuestionList = new ArrayList&lt;&gt;(extractListQuestion(path));</span>
+<span class="fc bfc" id="L300" title="All 2 branches covered.">                for (int i = 0; i &lt; tmpQuestionList.size(); i++) {</span>
+<span class="fc" id="L301">                    db.rmQuestion(tmpQuestionList.get(i).getContent());</span>
+                }
+<span class="fc" id="L303">                break;</span>
+            default:
+<span class="fc" id="L305">                System.out.println(&quot;Wrong media type : &quot; + mediaType);</span>
+        }
+<span class="fc" id="L307">    }</span>
+
+    /**
+     * Shows the entire Video database.
+     */
+    protected static void adminShowVideos() {
+<span class="fc" id="L313">        System.out.println(db.getAllVideos());</span>
+<span class="fc" id="L314">    }</span>
+
+    /**
+     * Shows the entire Audio database.
+     */
+    protected static void adminShowAudios() {
+<span class="fc" id="L320">        System.out.println(db.getAllAudios());</span>
+<span class="fc" id="L321">    }</span>
+
+    /**
+     * Shows the entire Question database.
+     */
+    protected static void adminShowQuestions() {
+<span class="fc" id="L327">        System.out.println(db.getAllQuestions());</span>
+<span class="fc" id="L328">    }</span>
+    
+   
+
+    /**
+     * &lt;p&gt;Returns the id of the language searched. The nomenclature is the following :&lt;/p&gt;
+     * &lt;ul&gt;
+     *  &lt;li&gt;fr = French&lt;/li&gt;
+     *  &lt;li&gt;en = English&lt;/li&gt;
+     *  &lt;li&gt;pt = Portuguese&lt;/li&gt;
+     *  &lt;li&gt;jp = Japonese&lt;/li&gt;
+     *  &lt;li&gt;us = American&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * @param language Language's name searched.
+     * @return int
+     */
+    protected static int getIdConvertedLanguageName(String language) {
+<span class="pc bpc" id="L346" title="5 of 22 branches missed.">        switch (language) {</span>
+            case &quot;fr&quot;:
+<span class="fc" id="L348">                return (db.getLanguageByName(&quot;French&quot;));</span>
+            case &quot;en&quot;:
+<span class="fc" id="L350">                return (db.getLanguageByName(&quot;English&quot;));</span>
+            case &quot;pt&quot;:
+<span class="fc" id="L352">                return (db.getLanguageByName(&quot;Portuguese&quot;));</span>
+            case &quot;jp&quot;:
+<span class="fc" id="L354">                return (db.getLanguageByName(&quot;Japonese&quot;));</span>
+            case &quot;us&quot;:
+<span class="fc" id="L356">                return (db.getLanguageByName(&quot;American&quot;));</span>
+            default:
+<span class="fc" id="L358">                System.out.println(&quot;[getIdConvertedLanguageName]Cannot convert :&quot; + language);</span>
+        }
+<span class="fc" id="L360">        return 0;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.4.201502262128</span></div></body></html>

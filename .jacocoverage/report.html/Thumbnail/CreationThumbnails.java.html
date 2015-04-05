@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>CreationThumbnails.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;ProjectProgAdmin&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">Thumbnail</a> &gt; <span class="el_source">CreationThumbnails.java</span></div><h1>CreationThumbnails.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Thumbnail;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
+import org.apache.commons.io.FilenameUtils;
+
+/**
+ *
+ * @author Thibaut
+ */
+public class CreationThumbnails {
+
+    String pathFilePicture;
+    String pathFileGif;
+    Picture picture;
+    
+<span class="nc" id="L25">    public CreationThumbnails(String getpathFile, String getname) {</span>
+<span class="nc" id="L26">        String filePath = System.getProperty(&quot;user.dir&quot;) + FilenameUtils.separatorsToSystem(getpathFile);</span>
+<span class="nc" id="L27">        String outputFileDB = FilenameUtils.separatorsToSystem(&quot;\\Resources\\Video\\&quot;)+getname;</span>
+<span class="nc" id="L28">        this.createPicture(filePath, outputFileDB);</span>
+<span class="nc" id="L29">        this.createGif(outputFileDB);</span>
+<span class="nc" id="L30">    }</span>
+    
+    private void createPicture(String filePath, String outputFileDB){
+<span class="nc" id="L33">        this.picture = new Picture(filePath);</span>
+<span class="nc" id="L34">        this.pathFilePicture = this.picture.dumpImageToFile(outputFileDB);</span>
+<span class="nc" id="L35">    }</span>
+    
+    private void createGif(String outputFileDB){
+        
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        if (this.picture.getBufferedImage().size() &gt; 1) {</span>
+            try {
+                // grab the output image type from the first image in the sequence
+<span class="nc" id="L42">                BufferedImage firstImage = this.picture.getBufferedImage().get(0);</span>
+                
+                // create a new BufferedOutputStream with the last argument
+<span class="nc" id="L45">                ImageOutputStream output = new FileImageOutputStream(new File(System.getProperty(&quot;user.dir&quot;)+outputFileDB+&quot;.gif&quot;));</span>
+                
+                // create a gif sequence with the type of the first image, 1 second
+                // between frames, which loops continuously
+<span class="nc" id="L49">                Gif writer = new Gif(output, firstImage.getType(), 50, false);</span>
+                
+                // write out the first image to our sequence...
+<span class="nc" id="L52">                writer.writeToSequence(firstImage);</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">                for (int i = 1; i &lt; this.picture.getBufferedImage().size(); i++) {</span>
+<span class="nc" id="L54">                    BufferedImage nextImage = this.picture.getBufferedImage().get(i);</span>
+<span class="nc" id="L55">                    writer.writeToSequence(nextImage);</span>
+                }
+                
+<span class="nc" id="L58">                writer.close();</span>
+<span class="nc" id="L59">                output.close();</span>
+                
+<span class="nc" id="L61">                this.pathFileGif = outputFileDB+&quot;.gif&quot;;</span>
+<span class="nc" id="L62">            } catch (IOException ex) {</span>
+<span class="nc" id="L63">                System.out.println(&quot;[CreateGif]Creation of file of gif is failed&quot;);</span>
+<span class="nc" id="L64">            }</span>
+        } else {
+<span class="nc" id="L66">            System.out.println(&quot;[CreateGif]One frame in video&quot;);</span>
+        }
+<span class="nc" id="L68">    }</span>
+
+    public String getPathFilePicture() {
+<span class="nc" id="L71">        return pathFilePicture;</span>
+    }
+
+    public String getPathFileGif() {
+<span class="nc" id="L75">        return pathFileGif;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.4.201502262128</span></div></body></html>
