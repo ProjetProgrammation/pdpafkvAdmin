@@ -7,6 +7,7 @@ package projectprogadmin;
  */
 import BDD.Audio;
 import BDD.DataBase;
+import BDD.Language;
 import BDD.Question;
 import BDD.Video;
 import Thumbnail.CreationThumbnails;
@@ -217,7 +218,7 @@ public final class AdminDatabase {
             reader.close();
             System.out.println("[extractListQuestion]File read");
         } catch (IOException e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
         return result;
@@ -325,6 +326,8 @@ public final class AdminDatabase {
     protected static void adminShowQuestions() {
         System.out.println(db.getAllQuestions());
     }
+    
+   
 
     /**
      * <p>Returns the id of the language searched. The nomenclature is the following :</p>

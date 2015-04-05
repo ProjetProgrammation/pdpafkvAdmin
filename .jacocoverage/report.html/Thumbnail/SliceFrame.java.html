@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>SliceFrame.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;ProjectProgAdmin&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">Thumbnail</a> &gt; <span class="el_source">SliceFrame.java</span></div><h1>SliceFrame.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Thumbnail;
+
+import com.xuggle.mediatool.MediaListenerAdapter;
+import com.xuggle.mediatool.event.IVideoPictureEvent;
+import com.xuggle.xuggler.Global;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
+/**
+ *
+ * @author Thibaut
+ */
+<span class="nc" id="L19">public class SliceFrame extends MediaListenerAdapter {</span>
+        
+<span class="nc" id="L21">    private final double SECONDS_BETWEEN_FRAMES = 0.001;</span>
+<span class="nc" id="L22">    private final long MICRO_SECONDS_BETWEEN_FRAMES = (long) (Global.DEFAULT_PTS_PER_SECOND * SECONDS_BETWEEN_FRAMES);</span>
+    // The video stream index, used to ensure we display frames from one and
+    // only one video stream from the media container.
+<span class="nc" id="L25">    private static int mVideoStreamIndex = -1;</span>
+    // Time of last frame write
+<span class="nc" id="L27">    private static long mLastPtsWrite = Global.NO_PTS;</span>
+<span class="nc" id="L28">    private final ArrayList&lt;BufferedImage&gt; images = new ArrayList();</span>
+    
+    
+    
+    @Override
+    public void onVideoPicture(IVideoPictureEvent event) {
+
+<span class="nc bnc" id="L35" title="All 2 branches missed.">        if (event.getStreamIndex() != mVideoStreamIndex) {</span>
+                // if the selected video stream id is not yet set, go ahead an select this lucky video stream
+<span class="nc bnc" id="L37" title="All 2 branches missed.">                if (mVideoStreamIndex == -1) {</span>
+<span class="nc" id="L38">                    mVideoStreamIndex = event.getStreamIndex();</span>
+                } // no need to show frames from this video stream
+                else {
+<span class="nc" id="L41">                    return;</span>
+                }
+            }
+
+            // if uninitialized, back date mLastPtsWrite to get the very first frame
+<span class="nc bnc" id="L46" title="All 2 branches missed.">            if (mLastPtsWrite == Global.NO_PTS) {</span>
+<span class="nc" id="L47">                mLastPtsWrite = event.getTimeStamp() - MICRO_SECONDS_BETWEEN_FRAMES;</span>
+            }
+
+            // if it's time to write the next frame
+<span class="nc bnc" id="L51" title="All 2 branches missed.">            if (event.getTimeStamp() - mLastPtsWrite &gt;= MICRO_SECONDS_BETWEEN_FRAMES) {</span>
+                    
+<span class="nc" id="L53">                BufferedImage resizedImage = new BufferedImage(129, 81, event.getImage().getType());</span>
+<span class="nc" id="L54">                Graphics2D g = resizedImage.createGraphics();</span>
+<span class="nc" id="L55">                g.drawImage(event.getImage(), 0, 0, 129, 81, null);</span>
+<span class="nc" id="L56">                g.dispose();</span>
+<span class="nc" id="L57">                this.BufferedImageInArray(resizedImage);</span>
+                                    
+                // update last write time
+<span class="nc" id="L60">                mLastPtsWrite += MICRO_SECONDS_BETWEEN_FRAMES;</span>
+            }
+<span class="nc" id="L62">        }</span>
+    
+    private void BufferedImageInArray(BufferedImage image) {
+<span class="nc" id="L65">        this.images.add(image);</span>
+<span class="nc" id="L66">    }</span>
+      
+    public ArrayList&lt;BufferedImage&gt; getImages() {
+<span class="nc" id="L69">        return images;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.4.201502262128</span></div></body></html>
