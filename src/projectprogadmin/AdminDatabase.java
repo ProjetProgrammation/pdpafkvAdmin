@@ -37,10 +37,8 @@ import java.util.regex.Pattern;
  */
 public final class AdminDatabase {
 
-    private static DataBase db;
-
     public static void createDb(){
-        db = new DataBase();
+        DataBase.initiateDataBase();
     }
     
     /**
@@ -195,7 +193,7 @@ public final class AdminDatabase {
                 while (m.find()) {
                     formatVideo = m.group().substring(1);
                 }
-                idVideo = db.searchVideoByNameFormat(nameVideo, formatVideo).getId();
+                idVideo = DataBase.searchVideoByNameFormat(nameVideo, formatVideo).getId();
                 //Extracting datas from the third line : the audio line
                 line = reader.readLine();
                 m = pName.matcher(line);
@@ -206,7 +204,7 @@ public final class AdminDatabase {
                 while (m.find()) {
                     formatAudio = m.group().substring(1);
                 }
-                idAudio = db.searchAudioByNameFormat(nameAudio, formatAudio).getId();
+                idAudio = DataBase.searchAudioByNameFormat(nameAudio, formatAudio).getId();
                 //Language extracting from the audio
                 m = pLanguage.matcher(line);
                 while (m.find()) {
@@ -236,10 +234,10 @@ public final class AdminDatabase {
                 tmpVideoList = new ArrayList<>(extractListVideo(path));
                 for (int i = 0; i < tmpVideoList.size(); i++) {
                     CreationThumbnails cThumb = new CreationThumbnails(tmpVideoList.get(i).getFilePath(), tmpVideoList.get(i).getName());
-                    db.addVideo(tmpVideoList.get(i).getName(),
+                    DataBase.addVideo(tmpVideoList.get(i).getName(),
                             tmpVideoList.get(i).getFilePath(),
                             tmpVideoList.get(i).getFormat(),
-                            db.getLanguageById(tmpVideoList.get(i).getIdLanguage()),
+                            DataBase.getLanguageById(tmpVideoList.get(i).getIdLanguage()),
                             cThumb.getPathFilePicture(),
                             cThumb.getPathFileGif());
                 }
@@ -248,20 +246,20 @@ public final class AdminDatabase {
                 ArrayList<Audio> tmpAudioList;
                 tmpAudioList = new ArrayList<>(extractListAudio(path));
                 for (int i = 0; i < tmpAudioList.size(); i++) {
-                    db.addAudio(tmpAudioList.get(i).getName(),
+                    DataBase.addAudio(tmpAudioList.get(i).getName(),
                             tmpAudioList.get(i).getFilePath(),
                             tmpAudioList.get(i).getFormat(),
-                            db.getLanguageById(tmpAudioList.get(i).getIdLanguage()));
+                            DataBase.getLanguageById(tmpAudioList.get(i).getIdLanguage()));
                 }
                 break;
             case "Question":
                 ArrayList<Question> tmpQuestionList;
                 tmpQuestionList = new ArrayList<>(extractListQuestion(path));
                 for (int i = 0; i < tmpQuestionList.size(); i++) {
-                    db.addQuestion(tmpQuestionList.get(i).getContent(),
-                            db.searchVideoById(tmpQuestionList.get(i).getIdVideo()),
-                            db.searchAudioById(tmpQuestionList.get(i).getIdAudio()),
-                            db.getLanguageById(tmpQuestionList.get(i).getIdLanguage()));
+                    DataBase.addQuestion(tmpQuestionList.get(i).getContent(),
+                            DataBase.searchVideoById(tmpQuestionList.get(i).getIdVideo()),
+                            DataBase.searchAudioById(tmpQuestionList.get(i).getIdAudio()),
+                            DataBase.getLanguageById(tmpQuestionList.get(i).getIdLanguage()));
                 }
                 break;
             default:
@@ -281,7 +279,7 @@ public final class AdminDatabase {
                 ArrayList<Video> tmpVideoList;
                 tmpVideoList = new ArrayList<>(extractListVideo(path));
                 for (int i = 0; i < tmpVideoList.size(); i++) {
-                    db.rmVideo(tmpVideoList.get(i).getName(),
+                    DataBase.rmVideo(tmpVideoList.get(i).getName(),
                             tmpVideoList.get(i).getFormat());
                 }
                 break;
@@ -289,7 +287,7 @@ public final class AdminDatabase {
                 ArrayList<Audio> tmpAudioList;
                 tmpAudioList = new ArrayList<>(extractListAudio(path));
                 for (int i = 0; i < tmpAudioList.size(); i++) {
-                    db.rmAudio(tmpAudioList.get(i).getName(),
+                    DataBase.rmAudio(tmpAudioList.get(i).getName(),
                             tmpAudioList.get(i).getFormat());
                 }
                 break;
@@ -297,7 +295,7 @@ public final class AdminDatabase {
                 ArrayList<Question> tmpQuestionList;
                 tmpQuestionList = new ArrayList<>(extractListQuestion(path));
                 for (int i = 0; i < tmpQuestionList.size(); i++) {
-                    db.rmQuestion(tmpQuestionList.get(i).getContent());
+                    DataBase.rmQuestion(tmpQuestionList.get(i).getContent());
                 }
                 break;
             default:
@@ -309,21 +307,21 @@ public final class AdminDatabase {
      * Shows the entire Video database.
      */
     protected static void adminShowVideos() {
-        System.out.println(db.getAllVideos());
+        System.out.println(DataBase.getAllVideos());
     }
 
     /**
      * Shows the entire Audio database.
      */
     protected static void adminShowAudios() {
-        System.out.println(db.getAllAudios());
+        System.out.println(DataBase.getAllAudios());
     }
 
     /**
      * Shows the entire Question database.
      */
     protected static void adminShowQuestions() {
-        System.out.println(db.getAllQuestions());
+        System.out.println(DataBase.getAllQuestions());
     }
 
     /**
@@ -342,15 +340,15 @@ public final class AdminDatabase {
     protected static int getIdConvertedLanguageName(String language) {
         switch (language) {
             case "fr":
-                return (db.getLanguageByName("French"));
+                return (DataBase.getLanguageByName("French"));
             case "en":
-                return (db.getLanguageByName("English"));
+                return (DataBase.getLanguageByName("English"));
             case "pt":
-                return (db.getLanguageByName("Portuguese"));
+                return (DataBase.getLanguageByName("Portuguese"));
             case "jp":
-                return (db.getLanguageByName("Japonese"));
+                return (DataBase.getLanguageByName("Japonese"));
             case "us":
-                return (db.getLanguageByName("American"));
+                return (DataBase.getLanguageByName("American"));
             default:
                 System.out.println("[getIdConvertedLanguageName]Cannot convert :" + language);
         }
