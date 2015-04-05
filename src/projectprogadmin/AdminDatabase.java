@@ -165,7 +165,7 @@ public final class AdminDatabase {
         String line;
         //Initializing the patterns to extract datas
         Pattern pLanguage = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]?[^_]?");
-        Pattern pName = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[a-zA-Z_0-9]{4}\\.");
+        Pattern pName = Pattern.compile("^[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[^_]*_[a-zA-Z_0-9]*\\.");
         Pattern pFormat = Pattern.compile("\\.[^_]*$");
         Matcher m;
         String language = "",
@@ -196,7 +196,6 @@ public final class AdminDatabase {
                     formatVideo = m.group().substring(1);
                 }
                 idVideo = db.searchVideoByNameFormat(nameVideo, formatVideo).getId();
-                
                 //Extracting datas from the third line : the audio line
                 line = reader.readLine();
                 m = pName.matcher(line);
