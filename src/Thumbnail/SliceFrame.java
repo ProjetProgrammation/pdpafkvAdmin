@@ -28,7 +28,10 @@ public class SliceFrame extends MediaListenerAdapter {
     private final ArrayList<BufferedImage> images = new ArrayList();
     
     
-    
+    /**
+     * Slice in few frames the video indicate in param of Picture constructor 
+     * @param event 
+     */
     @Override
     public void onVideoPicture(IVideoPictureEvent event) {
 
@@ -50,10 +53,12 @@ public class SliceFrame extends MediaListenerAdapter {
             // if it's time to write the next frame
             if (event.getTimeStamp() - mLastPtsWrite >= MICRO_SECONDS_BETWEEN_FRAMES) {
                     
+                //Create BufferImage to resize the frame
                 BufferedImage resizedImage = new BufferedImage(129, 81, event.getImage().getType());
                 Graphics2D g = resizedImage.createGraphics();
                 g.drawImage(event.getImage(), 0, 0, 129, 81, null);
                 g.dispose();
+                //Call function BufferedImageInArray
                 this.BufferedImageInArray(resizedImage);
                                     
                 // update last write time
@@ -61,10 +66,18 @@ public class SliceFrame extends MediaListenerAdapter {
             }
         }
     
+    /**
+     * Add the frame to the ArrayList of all frame selected
+     * @param image 
+     */
     private void BufferedImageInArray(BufferedImage image) {
         this.images.add(image);
     }
-      
+    
+    /**
+     * Get the ArrayList of the frames
+     * @return ArrayList<>
+     */
     public ArrayList<BufferedImage> getImages() {
         return images;
     }

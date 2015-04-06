@@ -38,7 +38,8 @@ public class Gif {
      *
      * @author Elliot Kroo (elliot[at]kroo[dot]net)
      */
-public Gif(ImageOutputStream outputStream,int imageType,int timeBetweenFramesMS,boolean loopContinuously) throws IIOException, IOException {
+    
+    public Gif(ImageOutputStream outputStream,int imageType,int timeBetweenFramesMS,boolean loopContinuously) throws IIOException, IOException {
 
         // my method to create a writer
         gifWriter = getWriter();

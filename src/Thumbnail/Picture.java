@@ -23,12 +23,13 @@ public class Picture {
     
     public Picture(String filePath) {
         
+        
         IMediaReader mediaReader = ToolFactory.makeReader(filePath);
 
-        // stipulate that we want BufferedImages created in BGR 24bit color space
+        //Stipulate that we want BufferedImages created in BGR 24bit color space
         mediaReader.setBufferedImageTypeToGenerate(BufferedImage.TYPE_3BYTE_BGR);
 
-        
+        //Call the functiun to create all frame
         sFrame = new SliceFrame();
         mediaReader.addListener(sFrame);
 
@@ -36,6 +37,11 @@ public class Picture {
         while (mediaReader.readPacket() == null){};    
     }
     
+    /**
+     * Save the ThumBnail picture and return the filePath
+     * @param outputFile
+     * @return String the FilePath of the Pic.
+     */
     public String dumpImageToFile(String outputFile) {
         BufferedImage image = sFrame.getImages().get(0);
         String outputFilename = outputFile + ".jpg";
@@ -49,6 +55,10 @@ public class Picture {
         }
     }
     
+    /**
+     * Get the ArrayList of the SliceFrame
+     * @return ArrayList<>
+     */
     public ArrayList<BufferedImage> getBufferedImage(){
         return sFrame.getImages();
     }

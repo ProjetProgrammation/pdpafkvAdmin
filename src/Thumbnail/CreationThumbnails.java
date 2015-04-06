@@ -22,18 +22,34 @@ public class CreationThumbnails {
     String pathFileGif;
     Picture picture;
     
+    /**
+     * Construct an object to create Thumbnails (pic and gif)
+     * @param getpathFile FilePath of the video
+     * @param getname Name of the video
+     */
     public CreationThumbnails(String getpathFile, String getname) {
+        // FilePath intra-OS
         String filePath = System.getProperty("user.dir") + FilenameUtils.separatorsToSystem(getpathFile);
+        // FilePath without format to put in db
         String outputFileDB = FilenameUtils.separatorsToSystem("\\Resources\\Video\\")+getname;
         this.createPicture(filePath, outputFileDB);
         this.createGif(outputFileDB);
     }
     
+    /**
+     * Function to create the pic
+     * @param filePath FilePath of the video
+     * @param outputFileDB FilePath without format to put in db
+     */
     private void createPicture(String filePath, String outputFileDB){
         this.picture = new Picture(filePath);
         this.pathFilePicture = this.picture.dumpImageToFile(outputFileDB);
     }
     
+    /**
+     * Function to create the gif
+     * @param outputFileDB FilePath without format to put in db
+     */
     private void createGif(String outputFileDB){
         
         if (this.picture.getBufferedImage().size() > 1) {
@@ -48,8 +64,9 @@ public class CreationThumbnails {
                 // between frames, which loops continuously
                 Gif writer = new Gif(output, firstImage.getType(), 50, false);
                 
-                // write out the first image to our sequence...
+                // write out the first image to our sequence
                 writer.writeToSequence(firstImage);
+                //write out all others frames to our sequence
                 for (int i = 1; i < this.picture.getBufferedImage().size(); i++) {
                     BufferedImage nextImage = this.picture.getBufferedImage().get(i);
                     writer.writeToSequence(nextImage);
@@ -67,10 +84,18 @@ public class CreationThumbnails {
         }
     }
 
+    /**
+     * get the FilePath of the picture create
+     * @return String 
+     */
     public String getPathFilePicture() {
         return pathFilePicture;
     }
 
+    /**
+     * get the FilePath of the gif create
+     * @return String
+     */
     public String getPathFileGif() {
         return pathFileGif;
     }
